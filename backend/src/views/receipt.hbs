@@ -1,0 +1,33 @@
+<div class="card">
+  <p class="club">Orso Tenis</p>
+  <h1>Comprobante de reserva #{{reservation.id}}</h1>
+
+  <dl>
+    <dt>Jugador</dt>
+    <dd>{{reservation.first_name}} {{reservation.last_name}}</dd>
+
+    <dt>Cancha</dt>
+    <dd>{{reservation.court}}</dd>
+
+    <dt>Fecha</dt>
+    <dd>{{formatDate reservation.reservation_date}}</dd>
+
+    <dt>Horario</dt>
+    <dd>{{formatTime reservation.start_time}}
+      a
+      {{formatTime reservation.end_time}}</dd>
+
+    <dt>Estado</dt>
+    <dd>
+      {{#if (isConfirmed reservation.status)}}
+        <span class="estado ok">{{statusLabel reservation.status}}</span>
+      {{else}}
+        <span class="estado cancelada">{{statusLabel reservation.status}}</span>
+      {{/if}}
+    </dd>
+  </dl>
+
+  <div class="acciones">
+    <button type="button" onclick="window.print()">Imprimir</button>
+  </div>
+</div>

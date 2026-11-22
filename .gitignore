@@ -1,0 +1,25 @@
+
+# Dependencias
+node_modules/
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Next.js
+.next/
+out/
+
+# Archivos de compilación
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo y editor
+.DS_Store
+Thumbs.db
+.vscode/
