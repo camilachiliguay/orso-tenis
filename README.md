@@ -142,4 +142,9 @@ Las contraseñas se guardan encriptadas (scrypt). Recordá definir `JWT_SECRET` 
 - Repositorio público en GitHub (sin `node_modules` ni `.env`).
 - `package.json` en la raíz, `backend/` y `frontend/`.
 - Base de datos exportada: `database/orso_tenis.sql`.
-- Video de demostración: _pegar aquí el link de YouTube_.
+
+## 🎾 Demostración de Orso Tenis
+
+Video de demostración del sistema web, donde se presentan las principales funcionalidades de la aplicación.
+
+[▶ Ver demostración del sistema](https://youtu.be/XIZf-atXTEk)

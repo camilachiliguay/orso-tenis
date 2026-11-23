@@ -125,7 +125,33 @@ function parseReservationBody(body, { requireCreatedBy }) {
     uses_lights,
   };
 }
+// Bloqueo para crear una reserva.
+async function withCourtLock(courtId, callback) {
+  const connection = await db.getConnection();
 
+  try {
+    await connection.beginTransaction();
+
+    const [courts] = await connection.query(
+      "SELECT id FROM courts WHERE id = ? AND is_active = TRUE FOR UPDATE",
+      [courtId],
+    );
+
+    if (courts.length === 0) {
+      throw new HttpError(404, "La cancha no existe o está inactiva");
+    }
+
+    const result = await callback(connection);
+
+    await connection.commit();
+    return result;
+  } catch (error) {
+    await connection.rollback().catch(() => {});
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
 // Ejecuta `callback` dentro de una transacción con la cancha bloqueada.
 // Bloquear la fila de la cancha serializa las reservas de esa cancha y
 // evita que dos personas reserven el mismo horario a la vez.
@@ -134,7 +160,10 @@ async function withCourtLocks(reservationId, newCourtId, callback) {
 
   try {
     await connection.beginTransaction();
-
+console.log("DEBUG EDITAR RESERVA:", {
+  reservationId,
+  newCourtId,
+});
     const [existing] = await connection.query(
       `
         SELECT id, court_id, reservation_date, start_time, end_time
@@ -148,7 +177,7 @@ async function withCourtLocks(reservationId, newCourtId, callback) {
     if (existing.length === 0) {
       throw new HttpError(404, "Reserva no encontrada o cancelada");
     }
-
+console.log("DEBUG RESERVA ENCONTRADA:", existing);
     const current = existing[0];
 
     const courtIds = [
@@ -577,7 +606,7 @@ const createReservation = handle(
       throw new HttpError(403, "No tenés permiso para crear reservas");
     }
     let priceApplied;
-    const reservationId = await withCourtLock(
+   const reservationId = await withCourtLock(
       reservation.court_id,
       async (connection) => {
         await assertPlayerExists(connection, reservation.player_id);
